@@ -1,0 +1,27 @@
+service: back-end
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  searchEngineClinic:
+    handler: src/searchEngineClinic.searchEngineClinic
+    events:
+      - httpApi:
+          path: /search/clinics
+          method: get
+  searchEngineDoctor:
+    handler: src/searchEngineDoctor.searchEngineDoctor
+    events:
+      - httpApi:
+          path: /search/doctors
+          method: get
+custom:
+  serverlessPluginTypescript:
+    tsConfigFileLocation: './tsconfig.build.json'
+ 
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
