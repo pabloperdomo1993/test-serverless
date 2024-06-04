@@ -36,29 +36,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchEngineClinic = void 0;
-var externalApiToEmbedding_1 = require("./domains/externalApiToEmbedding");
-var searchEngineClinic = function (event, _context) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, type, organizationName, firstName, lastName, response;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _a = event.queryStringParameters, type = _a.type, organizationName = _a.organizationName, firstName = _a.firstName, lastName = _a.lastName;
-                response = [];
-                if (!(type === 'SE')) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, externalApiToEmbedding_1.externalApiToEmbedding)({ organizationName: organizationName })];
-            case 1:
-                response = _b.sent();
-                _b.label = 2;
-            case 2: return [2 /*return*/, {
-                    statusCode: 200,
-                    body: JSON.stringify({
-                        message: 'Succesful search',
-                        input: response,
-                    }),
-                }];
-        }
+exports.requestToEmbedding = void 0;
+var embedding_1 = require("./../models/embedding");
+function requestToEmbedding(data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var reference, embedding;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    reference = '';
+                    if (data.organizationName) {
+                        reference = data.organizationName;
+                    }
+                    else {
+                        reference = (_b = (_a = data.firstName) !== null && _a !== void 0 ? _a : '' + ' ' + data.lastName) !== null && _b !== void 0 ? _b : '';
+                    }
+                    return [4 /*yield*/, (0, embedding_1.createEmbedding)(reference)];
+                case 1:
+                    embedding = _c.sent();
+                    return [2 /*return*/, embedding];
+            }
+        });
     });
-}); };
-exports.searchEngineClinic = searchEngineClinic;
-//# sourceMappingURL=searchEngineClinic.js.map
+}
+exports.requestToEmbedding = requestToEmbedding;
+//# sourceMappingURL=requestToEmbedding.js.map

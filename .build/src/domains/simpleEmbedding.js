@@ -36,29 +36,56 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchEngineClinic = void 0;
-var externalApiToEmbedding_1 = require("./domains/externalApiToEmbedding");
-var searchEngineClinic = function (event, _context) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, type, organizationName, firstName, lastName, response;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _a = event.queryStringParameters, type = _a.type, organizationName = _a.organizationName, firstName = _a.firstName, lastName = _a.lastName;
-                response = [];
-                if (!(type === 'SE')) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, externalApiToEmbedding_1.externalApiToEmbedding)({ organizationName: organizationName })];
-            case 1:
-                response = _b.sent();
-                _b.label = 2;
-            case 2: return [2 /*return*/, {
-                    statusCode: 200,
-                    body: JSON.stringify({
-                        message: 'Succesful search',
-                        input: response,
-                    }),
-                }];
-        }
+exports.simpleEmbedding = void 0;
+var externalApi_1 = require("./../services/externalApi");
+function simpleEmbedding(data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var body, response, clinics, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    body = {
+                        "firstName": null,
+                        "lastName": null,
+                        "organizationName": "Bone & Joint Clinic",
+                        "aoFirstName": null,
+                        "aoLastName": null,
+                        "skip": 0,
+                        "enumerationType": null,
+                        "number": null,
+                        "city": null,
+                        "state": null,
+                        "country": null,
+                        "taxonomyDescription": null,
+                        "postalCode": null,
+                        "exactMatch": true,
+                        "addressType": null
+                    };
+                    return [4 /*yield*/, (0, externalApi_1.post)('https://npiregistry.cms.hhs.gov/RegistryBack/search', body, {})];
+                case 1:
+                    response = _a.sent();
+                    console.log('......', response);
+                    clinics = response.map(function (clinic) {
+                        return {
+                            number: clinic.number,
+                            enumerationType: clinic.enumerationType,
+                            name: clinic.basic.name,
+                            countryCode: clinic.primaryAddress.countryCode,
+                            city: clinic.primaryAddress.city,
+                            state: clinic.primaryAddress.state,
+                            taxonomyDesc: clinic.primaryTaxonomy.desc
+                        };
+                    });
+                    console.log('......ccc', clinics);
+                    return [2 /*return*/, 'response.embeddings'];
+                case 2:
+                    error_1 = _a.sent();
+                    throw new Error("Error: ".concat(error_1.message));
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.searchEngineClinic = searchEngineClinic;
-//# sourceMappingURL=searchEngineClinic.js.map
+}
+exports.simpleEmbedding = simpleEmbedding;
+//# sourceMappingURL=simpleEmbedding.js.map

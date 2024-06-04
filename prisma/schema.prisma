@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:12345@localhost:5432/test?schema=public"
+}
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  number  String @unique
+  enumerationType String
+  name String
+  countryCode String
+  city String
+  state String
+  taxonomyDesc String
+  nameData Json?  @db.Json
+}

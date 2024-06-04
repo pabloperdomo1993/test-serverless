@@ -1,11 +1,19 @@
-export async function post(url: string, body: any, headers: any): Promise<AxiosResponse> {
+import { post } from './../services/externalApi';
+
+export async function createEmbedding(phrase: string): Promise<any> {
     try {
-      const response = await axios.post(url, body, {
-        headers: headers
-      });
+        const url = 'https://api.api-ninjas.com/v1/embeddings';
+        const body = {
+            text: phrase
+        };
+        const headers = {
+            'X-Api-Key': '3xbq8mzB7Ts63zhlp2V/RQ==GVnHrcPE0zk1DmLk'
+        };
+
+        const response: any = await post(url, body, headers);
   
-      return response.data;
+        return response.embeddings;
     } catch (error: any) {
-      throw new Error(`Error: ${error.message}`);
+        throw new Error(`Error: ${error.message}`);
     }
-  }
+}
