@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchEngineClinic = void 0;
 var externalApiToEmbedding_1 = require("./domains/externalApiToEmbedding");
+var simpleToEmbedding_1 = require("./domains/simpleToEmbedding");
 var searchEngineClinic = function (event, _context) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, type, organizationName, firstName, lastName, response;
     return __generator(this, function (_b) {
@@ -45,12 +46,18 @@ var searchEngineClinic = function (event, _context) { return __awaiter(void 0, v
             case 0:
                 _a = event.queryStringParameters, type = _a.type, organizationName = _a.organizationName, firstName = _a.firstName, lastName = _a.lastName;
                 response = [];
-                if (!(type === 'SE')) return [3 /*break*/, 2];
+                if (!(type === 'EE')) return [3 /*break*/, 2];
                 return [4 /*yield*/, (0, externalApiToEmbedding_1.externalApiToEmbedding)({ organizationName: organizationName })];
             case 1:
                 response = _b.sent();
                 _b.label = 2;
-            case 2: return [2 /*return*/, {
+            case 2:
+                if (!(type === 'SE')) return [3 /*break*/, 4];
+                return [4 /*yield*/, (0, simpleToEmbedding_1.simpleToEmbedding)({ organizationName: organizationName })];
+            case 3:
+                response = _b.sent();
+                _b.label = 4;
+            case 4: return [2 /*return*/, {
                     statusCode: 200,
                     body: JSON.stringify({
                         message: 'Succesful search',

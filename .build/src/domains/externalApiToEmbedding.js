@@ -46,7 +46,7 @@ var requestToEmbedding_1 = require("./../mappers/requestToEmbedding");
 var embeddingComparison_1 = require("./../models/embeddingComparison");
 function externalApiToEmbedding(data) {
     return __awaiter(this, void 0, void 0, function () {
-        var prisma, dataModel, body, response, model, _i, model_1, item, embedding, error_1, reference, dataUser, dataEmbedding, error_2;
+        var prisma, dataModel, body, response, model, _i, model_1, item, embedding, error_1, reference, dataUser, similarityFilter, dataEmbedding, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -55,7 +55,9 @@ function externalApiToEmbedding(data) {
                 case 1:
                     _a.trys.push([1, 13, , 14]);
                     dataModel = {
-                        organizationName: data.organizationName
+                        organizationName: data.organizationName,
+                        firstName: data.firstName,
+                        lastName: data.lastName
                     };
                     body = (0, requestToApi_1.requestToApi)(dataModel);
                     return [4 /*yield*/, (0, externalApi_1.post)('https://npiregistry.cms.hhs.gov/RegistryBack/search', body, {})];
@@ -98,7 +100,8 @@ function externalApiToEmbedding(data) {
                     return [4 /*yield*/, prisma.user.findMany()];
                 case 12:
                     dataUser = _a.sent();
-                    dataEmbedding = (0, embeddingComparison_1.embeddingComparison)(reference, dataUser);
+                    similarityFilter = 0.7;
+                    dataEmbedding = (0, embeddingComparison_1.embeddingComparison)(reference, dataUser, similarityFilter);
                     return [2 /*return*/, dataEmbedding];
                 case 13:
                     error_2 = _a.sent();

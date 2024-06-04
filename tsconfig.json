@@ -1,37 +1,15 @@
-// {
-//     "compilerOptions": {
-//       "preserveConstEnums": true,
-//       "strictNullChecks": true,
-//       "emitDecoratorMetadata": true,
-//       "experimentalDecorators": true,
-//       "esModuleInterop": true,
-//       "sourceMap": true,
-//       "allowJs": true,
-//       "target": "ES2016",
-//       "outDir": ".build",
-//       "moduleResolution": "node",
-//       "rootDir": "./"
-//     }
-// }
-
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
+    "esModuleInterop": true,
     "sourceMap": true,
+    "allowJs": true,
+    "target": "ES2016",
     "outDir": ".build",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "moduleResolution": "node",
+    "rootDir": "./"
   }
 }

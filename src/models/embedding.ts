@@ -11,9 +11,9 @@ export async function createEmbedding(phrase: string): Promise<any> {
         };
 
         const response: any = await post(url, body, headers);
-  
+        
         return response.embeddings;
     } catch (error: any) {
-        throw new Error(`Error: ${error.message}`);
+        throw new Error(`Error: ${error}`);
     }
 }

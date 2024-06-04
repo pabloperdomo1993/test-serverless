@@ -12,13 +12,14 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.embeddingComparison = void 0;
-function embeddingComparison(reference, data) {
+function embeddingComparison(reference, data, filter) {
     var newData = data.map(function (item) {
         var val = cosineSimilarity(item.nameData, reference);
         delete item.nameData;
         return __assign({ distance: val }, item);
     });
-    return newData;
+    var filterData = newData.filter(function (item) { return item.distance > filter; });
+    return filterData;
 }
 exports.embeddingComparison = embeddingComparison;
 function cosineSimilarity(vector1, vector2) {

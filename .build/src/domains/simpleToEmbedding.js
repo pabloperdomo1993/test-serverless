@@ -36,36 +36,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchEngineDoctor = void 0;
-var externalApiToEmbedding_1 = require("./domains/externalApiToEmbedding");
-var simpleToEmbedding_1 = require("./domains/simpleToEmbedding");
-var searchEngineDoctor = function (event, _context) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, type, organizationName, firstName, lastName, response;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _a = event.queryStringParameters, type = _a.type, organizationName = _a.organizationName, firstName = _a.firstName, lastName = _a.lastName;
-                response = [];
-                if (!(type === 'EE')) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, externalApiToEmbedding_1.externalApiToEmbedding)({ firstName: firstName, lastName: lastName })];
-            case 1:
-                response = _b.sent();
-                _b.label = 2;
-            case 2:
-                if (!(type === 'SE')) return [3 /*break*/, 4];
-                return [4 /*yield*/, (0, simpleToEmbedding_1.simpleToEmbedding)({ firstName: firstName, lastName: lastName })];
-            case 3:
-                response = _b.sent();
-                _b.label = 4;
-            case 4: return [2 /*return*/, {
-                    statusCode: 200,
-                    body: JSON.stringify({
-                        message: 'Succesful search',
-                        input: response,
-                    }),
-                }];
-        }
+exports.simpleToEmbedding = void 0;
+var client_1 = require("@prisma/client");
+var requestToEmbedding_1 = require("../mappers/requestToEmbedding");
+var embeddingComparison_1 = require("../models/embeddingComparison");
+function simpleToEmbedding(data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var prisma, reference, dataUser, similarityFilter, dataEmbedding, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    prisma = new client_1.PrismaClient();
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, (0, requestToEmbedding_1.requestToEmbedding)(data)];
+                case 2:
+                    reference = _a.sent();
+                    return [4 /*yield*/, prisma.user.findMany()];
+                case 3:
+                    dataUser = _a.sent();
+                    similarityFilter = 0.7;
+                    dataEmbedding = (0, embeddingComparison_1.embeddingComparison)(reference, dataUser, similarityFilter);
+                    return [2 /*return*/, dataEmbedding];
+                case 4:
+                    error_1 = _a.sent();
+                    throw new Error("Error: ".concat(error_1.message));
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); };
-exports.searchEngineDoctor = searchEngineDoctor;
-//# sourceMappingURL=searchEngineDoctor.js.map
+}
+exports.simpleToEmbedding = simpleToEmbedding;
+//# sourceMappingURL=simpleToEmbedding.js.map

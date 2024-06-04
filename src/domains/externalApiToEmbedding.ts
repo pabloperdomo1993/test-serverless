@@ -1,4 +1,5 @@
-import { ClinicRequest } from 'src/interfaces/clinicRequest.interface';
+import { ClinicRequest } from '../interfaces/clinicRequest.interface';
+import { DoctorRequest } from '../interfaces/doctorRequest.interface';
 import { post } from '../services/externalApi';
 import { requestToApi } from './../mappers/requestToApi';
 import { requestToModel } from './../mappers/responseToModel';
@@ -7,13 +8,16 @@ import { PrismaClient } from '@prisma/client';
 import { requestToEmbedding } from './../mappers/requestToEmbedding';
 import { embeddingComparison } from './../models/embeddingComparison';
 
-export async function externalApiToEmbedding(data: ClinicRequest): Promise<any> {
+export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest): Promise<any> {
   const prisma = new PrismaClient();
 
   try {
     const dataModel = {
-      organizationName: data.organizationName
+      organizationName: data.organizationName,
+      firstName: data.firstName,
+      lastName: data.lastName
     };
+    
     const body = requestToApi(dataModel);
 
     const response: any = await post('https://npiregistry.cms.hhs.gov/RegistryBack/search', body, {})
@@ -36,11 +40,12 @@ export async function externalApiToEmbedding(data: ClinicRequest): Promise<any> 
         console.error(error.code);
       }
     }
-
+    
     const reference = await requestToEmbedding(data);
     const dataUser = await prisma.user.findMany();
 
-    const dataEmbedding = embeddingComparison(reference, dataUser);
+    const similarityFilter = 0.7;
+    const dataEmbedding = embeddingComparison(reference, dataUser, similarityFilter);
 
     return dataEmbedding;
   } catch (error: any) {

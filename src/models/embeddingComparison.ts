@@ -1,4 +1,4 @@
-export function embeddingComparison(reference: any, data: any): any {
+export function embeddingComparison(reference: any, data: any, filter: number): any {
     const newData = data.map((item: any) => {
         const val = cosineSimilarity(item.nameData, reference);
 
@@ -10,7 +10,9 @@ export function embeddingComparison(reference: any, data: any): any {
         }
     });
 
-    return newData;
+    const filterData = newData.filter((item: any) => item.distance > filter);
+
+    return filterData;
 }
 
 function cosineSimilarity(vector1: any, vector2: any): any {

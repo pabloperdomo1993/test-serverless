@@ -58,7 +58,7 @@ function createEmbedding(phrase) {
                     return [2 /*return*/, response.embeddings];
                 case 2:
                     error_1 = _a.sent();
-                    throw new Error("Error: ".concat(error_1.message));
+                    throw new Error("Error: ".concat(error_1));
                 case 3: return [2 /*return*/];
             }
         });
