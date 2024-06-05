@@ -7,6 +7,7 @@ import { createEmbedding } from './../models/embedding';
 import { PrismaClient } from '@prisma/client';
 import { requestToEmbedding } from './../mappers/requestToEmbedding';
 import { embeddingComparison } from './../models/embeddingComparison';
+import { secrects } from '../utils/secrets';
 
 export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest): Promise<any> {
   const prisma = new PrismaClient();
@@ -17,17 +18,17 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
       firstName: data.firstName,
       lastName: data.lastName
     };
-    
-    const body = requestToApi(dataModel);
 
-    const response: any = await post('https://npiregistry.cms.hhs.gov/RegistryBack/search', body, {})
+    const body = requestToApi(dataModel);
+    const urlExternalApi = await secrects('URL_EXTERNAL_API');
+
+    const response: any = await post(urlExternalApi + '/search', body, {})
 
     const model = requestToModel(response);
 
     for (let item of model) {
       try {
         await prisma.user.create({ data: item });
-
         const embedding = await createEmbedding(item.name);
 
         await prisma.user.update({
@@ -40,7 +41,7 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
         console.error(error.code);
       }
     }
-    
+
     const reference = await requestToEmbedding(data);
     const dataUser = await prisma.user.findMany();
 

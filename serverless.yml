@@ -4,20 +4,42 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
+  region: us-east-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+        - rds-db:*
+        - lambda:*
+      Resource:
+        - arn:aws:rds:us-east-2:943766074476:db:testdatabase
+        - arn:aws:secretsmanager:us-east-2:943766074476:secret:URL_EXTERNAL_API-dp0YGm
 
 functions:
   searchEngineClinic:
     handler: src/searchEngineClinic.searchEngineClinic
+    timeout: 30
     events:
       - httpApi:
           path: /search/clinics
           method: get
   searchEngineDoctor:
     handler: src/searchEngineDoctor.searchEngineDoctor
+    timeout: 30
     events:
       - httpApi:
           path: /search/doctors
           method: get
+  referenceData:
+    handler: src/referenceData.referenceData
+    timeout: 30
+    events:
+      - httpApi:
+          path: /search/reference
+          method: get
+
+resources: ${file(resources.yml)}
+
 custom:
   serverlessPluginTypescript:
     tsConfigFileLocation: './tsconfig.build.json'
