@@ -31,5 +31,4 @@ $ npm run offline
 ```
 ### Architecure
 
-![Image](https://drive.google.com/uc?id=1jbqd4KrCRA632EAk-H6jWiQqlR64h182)
-
+![Image](https://drive.google.com/uc?id=1cpMLJHotEgeYZoVkMCy85S2xrqNBJDbd)
