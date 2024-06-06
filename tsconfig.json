@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "allowJs": true,
-    "target": "ES2016",
+    "target": "ES2018",
     "outDir": ".build",
     "moduleResolution": "node",
     "rootDir": "./"

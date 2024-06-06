@@ -1,12 +1,12 @@
 Resources:
-  testDatabase:
+  searchEngineDb:
     Type: 'AWS::RDS::DBInstance'
     Properties:
-      Engine: 'postgres'
-      DBInstanceIdentifier: 'testDatabase'
-      MasterUsername: 'root'
+      Engine: 'mysql'
+      DBInstanceIdentifier: 'searchEngineDb'
+      MasterUsername: 'admin'
       MasterUserPassword: '123456789'
       AllocatedStorage: 20
       DBInstanceClass: db.t4g.small
       AvailabilityZone: 'us-east-2a'
-      DBName: 'testDatabase'
+      DBName: 'searchEngineDb'

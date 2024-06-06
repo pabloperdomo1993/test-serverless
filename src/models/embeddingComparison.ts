@@ -16,6 +16,7 @@ export function embeddingComparison(reference: any, data: any, filter: number): 
 }
 
 function cosineSimilarity(vector1: any, vector2: any): any {
+    if (vector1.legth !== vector2.legth) return 0;
 
     const dotProduct = vector1.reduce((acc: number, val: number, i: number) => acc + (val * vector2[i]), 0);
 

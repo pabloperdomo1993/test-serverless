@@ -11,9 +11,14 @@ provider:
         - secretsmanager:GetSecretValue
         - rds-db:*
         - lambda:*
+        - sqs:*
       Resource:
         - arn:aws:rds:us-east-2:943766074476:db:testdatabase
         - arn:aws:secretsmanager:us-east-2:943766074476:secret:URL_EXTERNAL_API-dp0YGm
+        - arn:aws:sqs:us-east-2:943766074476:user_distribute
+        - arn:aws:sqs:us-east-2:943766074476:user_simple_distribute
+        - arn:aws:sqs:us-east-2:943766074476:user_update
+        - arn:aws:sqs:us-east-2:943766074476:user_save
 
 functions:
   searchEngineClinic:
@@ -37,6 +42,27 @@ functions:
       - httpApi:
           path: /search/reference
           method: get
+  distributeData:
+    handler: src/distributeData.distributeData
+    timeout: 30
+    events:
+      - httpApi:
+          path: /search/distribute
+          method: post
+  userUpdate:
+    handler: src/userUpdate.userUpdate
+    timeout: 30
+    events:
+      - httpApi:
+          path: /search/user-update
+          method: post
+  userSave:
+    handler: src/userSave.userSave
+    timeout: 30
+    events:
+      - httpApi:
+          path: /search/user-save
+          method: post
 
 resources: ${file(resources.yml)}
 

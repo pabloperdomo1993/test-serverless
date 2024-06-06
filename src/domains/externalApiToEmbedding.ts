@@ -3,15 +3,14 @@ import { DoctorRequest } from '../interfaces/doctorRequest.interface';
 import { post } from '../services/externalApi';
 import { requestToApi } from './../mappers/requestToApi';
 import { requestToModel } from './../mappers/responseToModel';
-import { createEmbedding } from './../models/embedding';
-import { PrismaClient } from '@prisma/client';
 import { requestToEmbedding } from './../mappers/requestToEmbedding';
 import { embeddingComparison } from './../models/embeddingComparison';
 import { secrects } from '../utils/secrets';
+import connectiondb from '../database/data-source';
+import { sendUsersByInsert } from '../services/sendUsersByInsert';
+import { sqsSendMessage } from '../utils/sqs';
 
 export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest): Promise<any> {
-  const prisma = new PrismaClient();
-
   try {
     const dataModel = {
       organizationName: data.organizationName,
@@ -19,34 +18,23 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
       lastName: data.lastName
     };
 
-    const body = requestToApi(dataModel);
-    const urlExternalApi = await secrects('URL_EXTERNAL_API');
+    const params = {
+      MessageBody: JSON.stringify(dataModel),
+      QueueUrl: 'https://sqs.us-east-2.amazonaws.com/943766074476/user_save',
+    };
 
-    const response: any = await post(urlExternalApi + '/search', body, {})
-
-    const model = requestToModel(response);
-
-    for (let item of model) {
-      try {
-        await prisma.user.create({ data: item });
-        const embedding = await createEmbedding(item.name);
-
-        await prisma.user.update({
-          where: { number: item.number },
-          data: {
-            nameData: embedding
-          }
-        });
-      } catch (error) {
-        console.error(error.code);
-      }
-    }
+    await sqsSendMessage(params);
+    
+    await connectiondb.initialize();
+    const respository = connectiondb.getRepository('Search');
 
     const reference = await requestToEmbedding(data);
-    const dataUser = await prisma.user.findMany();
 
     const similarityFilter = 0.7;
+    const dataUser = await respository.find();
     const dataEmbedding = embeddingComparison(reference, dataUser, similarityFilter);
+
+    await connectiondb.destroy();
 
     return dataEmbedding;
   } catch (error: any) {
