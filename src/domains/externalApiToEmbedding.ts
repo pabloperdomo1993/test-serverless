@@ -1,13 +1,9 @@
 import { ClinicRequest } from '../interfaces/clinicRequest.interface';
 import { DoctorRequest } from '../interfaces/doctorRequest.interface';
-import { post } from '../services/externalApi';
-import { requestToApi } from './../mappers/requestToApi';
-import { requestToModel } from './../mappers/responseToModel';
 import { requestToEmbedding } from './../mappers/requestToEmbedding';
 import { embeddingComparison } from './../models/embeddingComparison';
 import { secrects } from '../utils/secrets';
 import connectiondb from '../database/data-source';
-import { sendUsersByInsert } from '../services/sendUsersByInsert';
 import { sqsSendMessage } from '../utils/sqs';
 
 export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest): Promise<any> {
@@ -24,7 +20,7 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
     };
 
     await sqsSendMessage(params);
-    
+
     await connectiondb.initialize();
     const respository = connectiondb.getRepository('Search');
 
