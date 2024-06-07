@@ -27,7 +27,7 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
 
     const reference = await requestToEmbedding(dataModel);
 
-    const similarityFilter = 0.1;
+    const similarityFilter = 0.5;
     const paramsSearch = {
       type: 'find',
       entity: 'Search'
