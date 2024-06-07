@@ -12,6 +12,8 @@ provider:
         - rds-db:*
         - lambda:*
         - sqs:*
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
       Resource:
         - arn:aws:rds:us-east-2:943766074476:db:testdatabase
         - arn:aws:secretsmanager:us-east-2:943766074476:secret:URL_EXTERNAL_API-dp0YGm
@@ -19,6 +21,7 @@ provider:
         - arn:aws:sqs:us-east-2:943766074476:user_simple_distribute
         - arn:aws:sqs:us-east-2:943766074476:user_update
         - arn:aws:sqs:us-east-2:943766074476:user_save
+        - arn:aws:lambda:us-east-2:943766074476:function:back-end-dev-dbAccess
 
 functions:
   searchEngineClinic:
@@ -62,6 +65,13 @@ functions:
     events:
       - httpApi:
           path: /search/user-save
+          method: post
+  dbAccess:
+    handler: src/dbAccess.dbAccess
+    timeout: 30
+    events:
+      - httpApi:
+          path: /search/db-access
           method: post
 
 resources: ${file(resources.yml)}

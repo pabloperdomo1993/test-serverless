@@ -12,6 +12,8 @@ export function embeddingComparison(reference: any, data: any, filter: number): 
 
     const filterData = newData.filter((item: any) => item.distance > filter);
 
+    filterData.sort((a, b) => b.distance - a.distance);
+
     return filterData;
 }
 

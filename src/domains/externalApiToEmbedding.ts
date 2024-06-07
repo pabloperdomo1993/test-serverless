@@ -3,16 +3,20 @@ import { DoctorRequest } from '../interfaces/doctorRequest.interface';
 import { requestToEmbedding } from './../mappers/requestToEmbedding';
 import { embeddingComparison } from './../models/embeddingComparison';
 import { secrects } from '../utils/secrets';
-import connectiondb from '../database/data-source';
 import { sqsSendMessage } from '../utils/sqs';
+import { filterInput } from '../utils/filterInput';
+import { logger } from '../utils/logger';
+import { connection } from '../database/connection';
 
 export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest): Promise<any> {
   try {
     const dataModel = {
-      organizationName: data.organizationName,
-      firstName: data.firstName,
-      lastName: data.lastName
+      organizationName: filterInput(data.organizationName),
+      firstName: filterInput(data.firstName),
+      lastName: filterInput(data.lastName)
     };
+
+    logger.info(`${JSON.stringify(dataModel)}`);
 
     const params = {
       MessageBody: JSON.stringify(dataModel),
@@ -21,19 +25,23 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
 
     await sqsSendMessage(params);
 
-    await connectiondb.initialize();
-    const respository = connectiondb.getRepository('Search');
+    const reference = await requestToEmbedding(dataModel);
 
-    const reference = await requestToEmbedding(data);
+    const similarityFilter = 0.1;
+    const paramsSearch = {
+      type: 'find',
+      entity: 'Search'
+    };
 
-    const similarityFilter = 0.7;
-    const dataUser = await respository.find();
+    const dataUser = await connection(paramsSearch);
+
     const dataEmbedding = embeddingComparison(reference, dataUser, similarityFilter);
 
-    await connectiondb.destroy();
-
     return dataEmbedding;
+
   } catch (error: any) {
-    throw new Error(`Error: ${error.message}`);
+    logger.error(`${JSON.stringify(error)}`);
+
+    throw new Error(`${error.message}`);
   }
 }

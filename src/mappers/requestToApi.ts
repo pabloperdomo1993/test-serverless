@@ -9,11 +9,11 @@ export function requestToApi(data: any): any {
         "enumerationType": null,
         "number": null,
         "city": null,
-        "state": data.state ?? null,
-        "country": data.country ?? null,
+        "state": null,
+        "country": null,
         "taxonomyDescription": null,
         "postalCode": null,
-        "exactMatch": true,
+        "exactMatch": false,
         "addressType": null
     }
 

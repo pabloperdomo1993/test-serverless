@@ -1,24 +1,29 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { externalApiToEmbedding } from './domains/externalApiToEmbedding';
 import { simpleToEmbedding } from './domains/simpleToEmbedding';
+import { sendResponse } from './utils/sendResponse';
+import { logger } from './utils/logger';
 
 export const searchEngineClinic: any = async (event: any, _context: any) => {
   const { type, organizationName, firstName, lastName } = event.queryStringParameters;
   let response = [];
 
-  if (type === 'EE') {
-    response = await externalApiToEmbedding({organizationName});
-  }
+  logger.info(`${JSON.stringify(event.queryStringParameters)}`);
 
-  if (type === 'SE') {
-    response = await simpleToEmbedding({organizationName});
-  }
+  try {
+    if (type === 'EE') {
+      response = await externalApiToEmbedding({organizationName});
+    }
+  
+    if (type === 'SE') {
+      response = await simpleToEmbedding({organizationName});
+    }
+  
+    return await sendResponse(200, response, 'Succesful search');
+    
+  } catch (error) {
+    logger.error(`${JSON.stringify(error)}`);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Succesful search',
-      input: response,
-    }),
-  };
+    return await sendResponse(400, error.message, 'Error');
+  }
 };

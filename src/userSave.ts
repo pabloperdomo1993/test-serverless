@@ -1,40 +1,53 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { secrects } from './utils/secrets';
-import connectiondb from './database/data-source';
 import { requestToApi } from './mappers/requestToApi';
 import { post } from './services/externalApi';
 import { requestToModel } from './mappers/responseToModel';
 import { sendUsersByInsert } from './services/sendUsersByInsert';
+import { connection } from './database/connection';
 
 export const userSave: any = async (event: any, _context: any) => {
-  const dataModel: any = JSON.parse(event.Records[0].body);
 
-  await connectiondb.initialize();
-  const respository = connectiondb.getRepository('Search');
+  try {
+    const dataModel: any = JSON.parse(event.Records[0].body);
 
-  const body = requestToApi(dataModel);
+    const body = requestToApi(dataModel);
+  
+    const urlExternalApi = await secrects('URL_EXTERNAL_API');
+    const response: any = await post(urlExternalApi + '/search', body, {})
 
-  const urlExternalApi = await secrects('URL_EXTERNAL_API');
-  const response: any = await post(urlExternalApi + '/search', body, {})
-  const model = requestToModel(response);
+    const model = requestToModel(response);
+  
+    const numbers = model.map((user: any) => user.number);
+    
+    const paramsSearch = {
+      type: 'findQuery',
+      entity: 'Search',
+      query: {
+        where: numbers.map((number: any) => ({ number })),
+        select: ['number'],
+      }
+    };
 
+    const existingUsers = await connection(paramsSearch);
 
-  const numbers = model.map((user: any) => user.number);
+    const newUsers = model.filter((user: any) =>
+      !existingUsers.some(existingUser => existingUser.number === user.number)
+    );
+    
+    const paramsSave = {
+      type: 'save',
+      entity: 'Search',
+      modelSave: newUsers
+    };
 
-  const existingUsers = await respository.find({
-    where: numbers.map((number: any) => ({ number })),
-    select: ['number'],
-  });
+    const responseSave = await connection(paramsSave);
 
-  const newUsers = model.filter((user: any) =>
-    !existingUsers.some(existingUser => existingUser.number === user.number)
-  );
-
-  const responseSave = await respository.save(newUsers);
-
-  await connectiondb.destroy();
-
-  await sendUsersByInsert(responseSave);
+    await sendUsersByInsert(responseSave);
+    
+  } catch (error) {
+    console.log('.....', error);
+  }
 
   return {
     statusCode: 200,
