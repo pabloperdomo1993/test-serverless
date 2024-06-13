@@ -1,6 +1,6 @@
 import { SecretsManager } from 'aws-sdk';
 
-export async function secrects(SecretId: string): Promise<any> {
+export async function secrets(SecretId: string): Promise<any> {
     const secrects = new SecretsManager();
 
     const secrectResponse: any = await secrects.getSecretValue({ SecretId: SecretId }).promise();

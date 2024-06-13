@@ -2,10 +2,11 @@ import { ClinicRequest } from '../interfaces/clinicRequest.interface';
 import { requestToEmbedding } from '../mappers/requestToEmbedding';
 import { embeddingComparison } from '../models/embeddingComparison';
 import { DoctorRequest } from '../interfaces/doctorRequest.interface';
-import connectiondb from '../database/data-source';
+import { dataSource } from '../database/data-source';
 
 export async function simpleToEmbedding(data: ClinicRequest | DoctorRequest): Promise<any> {
   try {
+    const connectiondb = await dataSource();
     await connectiondb.initialize();
     const repository = connectiondb.getRepository('Search');
     

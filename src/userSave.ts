@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { secrects } from './utils/secrets';
+import { secrets } from './utils/secrets';
 import { requestToApi } from './mappers/requestToApi';
 import { post } from './services/externalApi';
 import { requestToModel } from './mappers/responseToModel';
@@ -15,7 +15,7 @@ export const userSave: any = async (event: any, _context: any) => {
 
     const body = requestToApi(dataModel);
   
-    const urlExternalApi = await secrects('URL_EXTERNAL_API');
+    const urlExternalApi = await secrets('URL_EXTERNAL_API');
     const response: any = await post(urlExternalApi + '/search', body, {})
 
     const model = requestToModel(response);

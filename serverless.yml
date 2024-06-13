@@ -17,6 +17,11 @@ provider:
       Resource:
         - arn:aws:rds:us-east-2:943766074476:db:testdatabase
         - arn:aws:secretsmanager:us-east-2:943766074476:secret:URL_EXTERNAL_API-dp0YGm
+        - arn:aws:secretsmanager:us-east-2:943766074476:secret:DB_TEST_HOST-UZkWLU
+        - arn:aws:secretsmanager:us-east-2:943766074476:secret:DB_TEST_USER-1P1ybe
+        - arn:aws:secretsmanager:us-east-2:943766074476:secret:DB_TEST_PASSWORD-f0Js1I
+        - arn:aws:secretsmanager:us-east-2:943766074476:secret:DB_TEST_DATABASE-2rUoYo
+        - arn:aws:secretsmanager:us-east-2:943766074476:secret:DB_TEST_PORT-i8K6Sa
         - arn:aws:sqs:us-east-2:943766074476:user_save
         - arn:aws:lambda:us-east-2:943766074476:function:back-end-dev-dbAccess
 

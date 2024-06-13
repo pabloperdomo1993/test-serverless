@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import connection from './database/data-source';
+import { dataSource } from './database/data-source';
 import { logger } from './utils/logger';
 import { sendResponse } from './utils/sendResponse';
 
@@ -9,6 +9,7 @@ export const dbAccess: any = async (event: any, _context: any) => {
   let response: any = null;
 
   try {
+    const connection = await dataSource();
     await connection.initialize();
 
     const repository = connection.getRepository(entity);
