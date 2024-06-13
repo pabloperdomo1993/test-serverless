@@ -1,11 +1,11 @@
 export function embeddingComparison(reference: any, data: any, filter: number): any {
     const newData = data.map((item: any) => {
-        const val = cosineSimilarity(item.nameData, reference);
+        const value = cosineSimilarity(item.nameData, reference);
 
         delete item.nameData;
 
         return {
-            distance: val,
+            distance: value,
             ...item
         }
     });
@@ -17,8 +17,8 @@ export function embeddingComparison(reference: any, data: any, filter: number): 
     return filterData;
 }
 
-function cosineSimilarity(vector1: any, vector2: any): any {
-    if (vector1.legth !== vector2.legth) return 0;
+function cosineSimilarity(vector1: number[], vector2: number[]): number {
+    if (vector1.length !== vector2.length) return 0;
 
     const dotProduct = vector1.reduce((acc: number, val: number, i: number) => acc + (val * vector2[i]), 0);
 
@@ -28,4 +28,8 @@ function cosineSimilarity(vector1: any, vector2: any): any {
     const similarity = dotProduct / (norm1 * norm2);
 
     return similarity;
+}
+
+function euclideanDistance(A: number[], B: number[]) {
+    return Math.sqrt(A.reduce((sum: number, a: number, i: number) => sum + Math.pow(a - B[i], 2), 0));
 }

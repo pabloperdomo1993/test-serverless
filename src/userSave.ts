@@ -5,6 +5,8 @@ import { post } from './services/externalApi';
 import { requestToModel } from './mappers/responseToModel';
 import { sendUsersByInsert } from './services/sendUsersByInsert';
 import { connection } from './database/connection';
+import { sendResponse } from './utils/sendResponse';
+import { logger } from './utils/logger';
 
 export const userSave: any = async (event: any, _context: any) => {
 
@@ -44,16 +46,11 @@ export const userSave: any = async (event: any, _context: any) => {
     const responseSave = await connection(paramsSave);
 
     await sendUsersByInsert(responseSave);
-    
-  } catch (error) {
-    console.log('.....', error);
-  }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Succesful reference',
-      input: 'response',
-    }),
-  };
+    return await sendResponse(200, {}, 'Succesful search');
+  } catch (error) {
+    logger.error(`${JSON.stringify(error)}`);
+
+    return await sendResponse(400, error.message, 'Error');
+  }
 };

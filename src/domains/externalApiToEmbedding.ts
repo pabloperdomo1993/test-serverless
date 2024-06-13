@@ -16,7 +16,7 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
       lastName: filterInput(data.lastName)
     };
 
-    logger.info(`${JSON.stringify(dataModel)}`);
+    logger.info(`Data model: ${JSON.stringify(dataModel)}`);
 
     const params = {
       MessageBody: JSON.stringify(dataModel),
@@ -35,7 +35,12 @@ export async function externalApiToEmbedding(data: ClinicRequest | DoctorRequest
 
     const dataUser = await connection(paramsSearch);
 
+    logger.info(`Reference comparison: ${JSON.stringify(dataModel)}`);
+    logger.info(`Reference data User: ${JSON.stringify(dataModel)}`);
+
     const dataEmbedding = embeddingComparison(reference, dataUser, similarityFilter);
+
+    logger.info(`Embedding: ${JSON.stringify(dataModel)}`);
 
     return dataEmbedding;
 

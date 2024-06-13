@@ -5,7 +5,7 @@ import { sendResponse } from './utils/sendResponse';
 import { logger } from './utils/logger';
 
 export const searchEngineClinic: any = async (event: any, _context: any) => {
-  const { type, organizationName, firstName, lastName } = event.queryStringParameters;
+  const { type, organizationName } = event.queryStringParameters;
   let response = [];
 
   logger.info(`${JSON.stringify(event.queryStringParameters)}`);
