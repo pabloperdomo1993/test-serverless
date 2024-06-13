@@ -2,7 +2,6 @@ import { ClinicRequest } from '../interfaces/clinicRequest.interface';
 import { DoctorRequest } from '../interfaces/doctorRequest.interface';
 import { requestToEmbedding } from './../mappers/requestToEmbedding';
 import { embeddingComparison } from './../models/embeddingComparison';
-import { secrets } from '../utils/secrets';
 import { sqsSendMessage } from '../utils/sqs';
 import { filterInput } from '../utils/filterInput';
 import { logger } from '../utils/logger';

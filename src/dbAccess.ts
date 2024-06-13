@@ -33,7 +33,7 @@ export const dbAccess: any = async (event: any, _context: any) => {
     await connection.destroy();
 
     logger.info(`Connected database`);
-    return await sendResponse(200, response, 'Succesful search');
+    return await sendResponse(200, response, 'Succesful connection');
 
   } catch (error) {
     logger.error(`${JSON.stringify(error)}`);
